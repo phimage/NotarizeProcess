@@ -5,6 +5,9 @@
 
 Utility object to launch `xcrun altool` to get notarization information.
 
+
+## Get history or information
+
 ```swift
 let process = NotarizeProcess(username: username, password: password)
 
@@ -16,6 +19,20 @@ for item in history.items {
    }
 }
 ```
+
+## Get audit log from information
+
+```swift
+let info = try process.notarizationInfo(for: id)
+let publisher = info.auditLogPublisher() // using Combine framework
+
+_ = publisher.sink(receiveCompletion: { completion in
+...
+}) { auditLog in
+...
+}
+```
+
 ## Dependencies
 
 * [NotarizationInfo](https://github.com/phimage/NotarizationInfo)
