@@ -29,7 +29,7 @@ final class NotarizeProcessTests: XCTestCase {
     
     func testAuditLog() {
         let environment = ProcessInfo.processInfo.environment
-        guard let username = environment["NOTARIZE_TEST_UUID"] else {
+        guard let username = environment["NOTARIZE_USERNAME"] else {
             XCTFail("No username to test. Define NOTARIZE_USERNAME")
             return
         }
