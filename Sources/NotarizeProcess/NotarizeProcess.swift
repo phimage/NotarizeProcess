@@ -1,13 +1,13 @@
 import NotarizationInfo
 import Foundation
 
-enum NotarizeProcessError: Error {
+public enum NotarizeProcessError: Error {
     case notaryError(NotarizationError)
     case processError(Error)
     case decodingError(DecodingError)
 }
 
-struct NotarizeProcess {
+public struct NotarizeProcess {
 
     private var username: String
     private var password: String
