@@ -16,3 +16,7 @@ for item in history.items {
    }
 }
 ```
+## Dependencies
+
+* [NotarizationInfo](https://github.com/phimage/NotarizationInfo)
+* [NotarizationAuditLog](https://github.com/phimage/NotarizationAuditLog)
