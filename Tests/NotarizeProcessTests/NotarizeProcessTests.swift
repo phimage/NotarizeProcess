@@ -2,6 +2,7 @@ import XCTest
 @testable import NotarizeProcess
 
 final class NotarizeProcessTests: XCTestCase {
+
     func testProcess() {
         let environment = ProcessInfo.processInfo.environment
         guard let username = environment["NOTARIZE_USERNAME"] else {
@@ -13,7 +14,7 @@ final class NotarizeProcessTests: XCTestCase {
             return
         }
         let process = NotarizeProcess(username: username, password: password)
-        
+
         do {
             let history = try process.notarizationHistory()
             for item in history.items {
@@ -26,7 +27,7 @@ final class NotarizeProcessTests: XCTestCase {
             XCTFail("\(error)")
         }
     }
-    
+
     func testAuditLog() {
         let environment = ProcessInfo.processInfo.environment
         guard let username = environment["NOTARIZE_USERNAME"] else {
@@ -50,12 +51,12 @@ final class NotarizeProcessTests: XCTestCase {
                 return
             }
             let info = try process.notarizationInfo(for: id)
-             
+
             guard let publisher = info.auditLogPublisher() else {
                 XCTFail("no publisher/logFileurl to test audit log")
                 return
             }
-            
+
             _ = publisher.sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -70,7 +71,7 @@ final class NotarizeProcessTests: XCTestCase {
         } catch {
             XCTFail("\(error)")
         }
-        
+
         wait(for: [expectation], timeout: 10.0)
     }
 

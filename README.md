@@ -5,18 +5,26 @@
 
 Utility object to launch `xcrun altool` to get notarization information.
 
-
-## Get history or information
+## Notarize app
 
 ```swift
 let process = NotarizeProcess(username: username, password: password)
+let upload = try process.notarize(app: appArchiveURL, bundleID: "your.app.bundle.id")
+```
 
-let history = try process.notarizationHistory()
+## Get information about notarized app
+
+```swift
+let info = try process.notarizationInfo(for: upload) // or upload.requestUUID
+```
+
+## Get history and full information
+
+```
+let history = try process.notarizationHistory() // page: i
 for item in history.items {
-   if let id = item.requestUUID {
-       let info = try process.notarizationInfo(for: id)
-       print("\(info)")
-   }
+    let info = try process.notarizationInfo(for: item)
+    print("\(info)")
 }
 ```
 
@@ -37,3 +45,14 @@ _ = publisher.sink(receiveCompletion: { completion in
 
 * [NotarizationInfo](https://github.com/phimage/NotarizationInfo)
 * [NotarizationAuditLog](https://github.com/phimage/NotarizationAuditLog)
+
+![Dependencies graph](https://g.gravizo.com/svg?
+ digraph DependenciesGraph {
+ node [shape = box]
+ "https://github.com/phimage/NotarizeProcess"[label="NotarizeProcess"]
+ "https://github.com/phimage/NotarizationInfo"[label="NotarizationInfo"]
+ "https://github.com/phimage/NotarizeProcess" -> "https://github.com/phimage/NotarizationInfo"
+ "https://github.com/phimage/NotarizationAuditLog"[label="NotarizationAuditLog"]
+ "https://github.com/phimage/NotarizeProcess" -> "https://github.com/phimage/NotarizationAuditLog"
+}
+)
