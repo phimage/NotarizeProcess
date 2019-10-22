@@ -20,7 +20,7 @@ let info = try process.notarizationInfo(for: upload) // or upload.requestUUID
 
 ## Get history and full information
 
-```
+```swift
 let history = try process.notarizationHistory() // page: i
 for item in history.items {
     let info = try process.notarizationInfo(for: item)
@@ -43,16 +43,7 @@ _ = publisher.sink(receiveCompletion: { completion in
 
 ## Dependencies
 
+![Dependencies graph](https://g.gravizo.com/svg?%20digraph%20DependenciesGraph%20{%20node%20[shape%20=%20box]%20%22https://github.com/phimage/NotarizeProcess%22[label=%22NotarizeProcess%22]%20%22https://github.com/phimage/NotarizationInfo%22[label=%22NotarizationInfo%22]%20%22https://github.com/phimage/NotarizeProcess%22%20-%3E%20%22https://github.com/phimage/NotarizationInfo%22%20%22https://github.com/phimage/NotarizationAuditLog%22[label=%22NotarizationAuditLog%22]%20%22https://github.com/phimage/NotarizeProcess%22%20-%3E%20%22https://github.com/phimage/NotarizationAuditLog%22%20})
+
 * [NotarizationInfo](https://github.com/phimage/NotarizationInfo)
 * [NotarizationAuditLog](https://github.com/phimage/NotarizationAuditLog)
-
-![Dependencies graph](https://g.gravizo.com/svg?
- digraph DependenciesGraph {
- node [shape = box]
- "https://github.com/phimage/NotarizeProcess"[label="NotarizeProcess"]
- "https://github.com/phimage/NotarizationInfo"[label="NotarizationInfo"]
- "https://github.com/phimage/NotarizeProcess" -> "https://github.com/phimage/NotarizationInfo"
- "https://github.com/phimage/NotarizationAuditLog"[label="NotarizationAuditLog"]
- "https://github.com/phimage/NotarizeProcess" -> "https://github.com/phimage/NotarizationAuditLog"
-}
-)
