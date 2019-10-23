@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://mit-license.org)
 [![Language](http://img.shields.io/badge/language-swift-orange.svg?style=flat)](https://developer.apple.com/swift)
 
-Utility object to launch `xcrun altool` to get notarization information.
+Utility object to launch `xcrun altool` to notarize app and get notarization information.
 
 ## Notarize app
 
@@ -16,6 +16,12 @@ let upload = try process.notarize(app: appArchiveURL, bundleID: "your.app.bundle
 
 ```swift
 let info = try process.notarizationInfo(for: upload) // or upload.requestUUID
+```
+
+You can also wait the final result
+
+```swift
+let info = try process.waitForNotarizationInfo(for: upload, timeout: 30 * 60)
 ```
 
 ## Get history and full information
@@ -39,6 +45,19 @@ _ = publisher.sink(receiveCompletion: { completion in
 }) { auditLog in
 ...
 }
+```
+
+## Stapler
+
+### Staple
+
+```swift
+try process.staple(app: appURL)
+```
+### Validate
+
+```swift
+try process.validate(app: appURL)
 ```
 
 ## Dependencies

@@ -1,20 +1,11 @@
-import NotarizationInfo
+//
+//  NotarizeProcess.swift
+//
+//
+//  Created by phimage on 20/10/2019.
+//
 import Foundation
-
-/// Error thrown by `NotarizeProcess`.
-public enum NotarizeProcessError: Error {
-    /// Error from notarization
-    case notaryError(NotarizationError)
-    /// Runtime process error
-    case processError(Error)
-    /// Data decoding error
-    case decodingError(DecodingError)
-}
-
-/// Platform.
-public enum NotarizePlatform: String {
-    case osx, ios, appletvos
-}
+import NotarizationInfo
 
 /// Object to notarize app or get notarization informations.
 public struct NotarizeProcess {
@@ -137,6 +128,68 @@ public struct NotarizeProcess {
     /// - Returns: A `NotarizationInfo` for uploaded app.
     public func notarizationInfo(for upload: NotarizationUpload) throws -> NotarizationInfo {
         return try notarizationInfo(for: upload.requestUUID)
+    }
+
+    // MARK: - wait info
+
+    public func waitForNotarizationInfo(for uuid: String, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
+        var total: TimeInterval = 0
+        var sleep: TimeInterval = sleepTime
+
+        var info = try notarizationInfo(for: uuid)
+        while info.status == .inProgress {
+            // No results were available so wait and try again
+            if total < timeout {
+                waitMethod.wait(for: sleep)
+                total += sleep
+                sleep = min(sleep * TimeInterval(sleepTimeFactor), TimeInterval(60) /* Do not wait more than 1 minute for any */)
+            } else {
+                throw NotarizeProcessError.timeOut(timeout)
+            }
+            info = try notarizationInfo(for: uuid)
+        }
+        return info
+    }
+
+    public func waitForNotarizationInfo(for info: NotarizationInfo, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
+        guard let requestUUID = info.requestUUID else {
+            return info
+        }
+        return try waitForNotarizationInfo(for: requestUUID, sleepTime: sleepTime, sleepTimeFactor: sleepTimeFactor, timeout: timeout, waitMethod: waitMethod)
+    }
+
+    public func waitForNotarizationInfo(for upload: NotarizationUpload, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
+        return try waitForNotarizationInfo(for: upload.requestUUID, sleepTime: sleepTime, sleepTimeFactor: sleepTimeFactor, timeout: timeout, waitMethod: waitMethod)
+    }
+
+    // MARK: - staple
+
+    /// Retrieves a ticket and attaches it to the supported file format at path.
+    ///
+    /// - Parameters:
+    ///   - app: url of the file.
+    ///
+    /// - Throws: `NotarizeProcessError.processError`
+    public func staple(app: URL) throws {
+        do {
+            _ = try XcRun.run(arguments: ["stapler", "staple", "--verbose", "\"\(app.path)\""])
+        } catch {
+            throw NotarizeProcessError.processError(error)
+        }
+    }
+
+    /// Validates an existing stapled ticket.
+    ///
+    /// - Parameters:
+    ///   - app: url of the file.
+    ///
+    /// - Throws: `NotarizeProcessError.processError`
+    public func validate(app: URL) throws {
+        do {
+            _ = try XcRun.run(arguments: ["stapler", "validate", "--verbose", "\"\(app.path)\""])
+        } catch {
+            throw NotarizeProcessError.processError(error)
+        }
     }
 
     // MARK: - privates
