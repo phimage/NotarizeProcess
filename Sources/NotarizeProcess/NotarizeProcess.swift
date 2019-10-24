@@ -89,7 +89,7 @@ public struct NotarizeProcess {
     ///
     /// - Throws: `NotarizeProcessError`
     /// - Returns: A `NotarizationHistory`which contains a list of `NotarizationInfo`.
-    public func notarizationHistory(for page: Int = 0, ascProvider: String? = nil) throws -> NotarizationHistory {
+    public func notarizationHistory(for page: Int = 0) throws -> NotarizationHistory {
         var args = ["--notarization-history"]
         if page > 0 {
             args.append("\(page)")
@@ -181,7 +181,7 @@ public struct NotarizeProcess {
         return info
     }
 
-    private func firstNotarizationInfo(for uuid: String, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
+    func firstNotarizationInfo(for uuid: String, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
         do {
            return try notarizationInfo(for: uuid)
         } catch let error as NotarizeProcessError {
