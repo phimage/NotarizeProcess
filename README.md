@@ -74,6 +74,12 @@ try process.staple(app: appURL)
 try process.validate(app: appURL)
 ```
 
+## All in one
+
+```swift
+try process.run(actions: [.notarize, .wait, .staple] /*.all*/, on: appURL)
+```
+
 ## Dependencies
 
 ![Dependencies graph](https://g.gravizo.com/svg?%20digraph%20DependenciesGraph%20{%20node%20[shape%20=%20box]%20%22https://github.com/phimage/NotarizeProcess%22[label=%22NotarizeProcess%22]%20%22https://github.com/phimage/NotarizationInfo%22[label=%22NotarizationInfo%22]%20%22https://github.com/phimage/NotarizeProcess%22%20-%3E%20%22https://github.com/phimage/NotarizationInfo%22%20%22https://github.com/phimage/NotarizationAuditLog%22[label=%22NotarizationAuditLog%22]%20%22https://github.com/phimage/NotarizeProcess%22%20-%3E%20%22https://github.com/phimage/NotarizationAuditLog%22%20})
