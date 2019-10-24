@@ -3,6 +3,14 @@ import XCTest
 
 final class NotarizeProcessTests: XCTestCase {
 
+    /*func testDitto() {
+        do {
+            _ = try Ditto.run(arguments: [ "-c", "-k", "--rsrc", "--keepParent", "/Users/phimage/an.app", "\"/Users/phimage/an.app.zip\""])
+        } catch {
+            XCTFail("\(error)")
+        }
+    }*/
+
     func testProcess() {
         let environment = ProcessInfo.processInfo.environment
         guard let username = environment["NOTARIZE_USERNAME"] else {

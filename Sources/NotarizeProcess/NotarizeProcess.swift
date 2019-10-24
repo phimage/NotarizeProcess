@@ -49,7 +49,7 @@ public struct NotarizeProcess {
         if ext == "app" {
             file = app.appendingPathExtension("zip")
             do {
-                _ = try Ditto.run(arguments: [ "-c", "-k", "--rsrc", "--keepParent", "\"\(app.path)\"", "\"\(file.path)\""])
+                _ = try Ditto.run(arguments: [ "-c", "-k", "--rsrc", "--keepParent", "\(app.path)", "\(file.path)"])
             } catch {
                 throw NotarizeProcessError.processError(error)
             }
