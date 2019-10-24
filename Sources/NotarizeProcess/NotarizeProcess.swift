@@ -52,6 +52,8 @@ public struct NotarizeProcess {
         let response = try decode(out)
         do {
             return try response.getNotarizationUpload()
+        }  catch let error as NotarizationError {
+            throw NotarizeProcessError.notaryError(error)
         } catch let error as DecodingError {
             throw NotarizeProcessError.decodingError(error)
         } catch {
@@ -80,6 +82,8 @@ public struct NotarizeProcess {
         let response = try decode(out)
         do {
             return try response.getNotarizationHistory()
+        }  catch let error as NotarizationError {
+            throw NotarizeProcessError.notaryError(error)
         } catch let error as DecodingError {
             throw NotarizeProcessError.decodingError(error)
         } catch {
@@ -100,6 +104,8 @@ public struct NotarizeProcess {
         let response = try decode(out)
         do {
             return try response.getNotarizationInfo()
+        }  catch let error as NotarizationError {
+            throw NotarizeProcessError.notaryError(error)
         } catch let error as DecodingError {
             throw NotarizeProcessError.decodingError(error)
         } catch {
