@@ -43,8 +43,27 @@ public struct NotarizeProcess {
     /// - Throws: `NotarizeProcessError`
     /// - Returns: A `NotarizationUpload`.
     public func notarize(app: URL, bundleId: String, type: NotarizePlatform = .osx) throws -> NotarizationUpload {
+        var file = app
+        var primaryBundleId = bundleId
+        let ext = app.pathExtension
+        if ext == "app" {
+            file = app.appendingPathExtension("zip")
+            do {
+                _ = try Ditto.run(arguments: [ "-c", "-k", "--rsrc", "--keepParent", "\"\(app.path)\"", "\"\(file.path)\""])
+            } catch {
+                throw NotarizeProcessError.processError(error)
+            }
+
+            if bundleId.isEmpty {
+                let infoPlistURL = app.appendingPathComponent("Contents").appendingPathComponent("Info.plist")
+                if let infoPlist = NSDictionary(contentsOf: infoPlistURL), let bundleId = infoPlist.value(forKey: "CFBundleIdentifier") as? String {
+                    primaryBundleId = bundleId
+                }
+            }
+        }
+
         var args = ["--notarize-app", "-t", type.rawValue]
-        args.append(contentsOf: ["-f", "\"\(app.path)\"", "--primary-bundle-id", bundleId])
+        args.append(contentsOf: ["-f", "\"\(file.path)\"", "--primary-bundle-id", primaryBundleId])
         if let ascProvider = ascProvider {
             args.append(contentsOf: ["--asc-provider", "\"\(ascProvider)\""])
         }
