@@ -12,22 +12,36 @@ let process = NotarizeProcess(username: username, password: password)
 let upload = try process.notarize(app: appArchiveURL, bundleID: "your.app.bundle.id")
 ```
 
+### or for .app
+
+An archive will be created using ditto.
+
+```swift
+let upload = try process.notarize(app: appURL, bundleID: "")
+```
+If the `bundleID` argument is empty, we extract it from the .app Info.plist.
+ 
 ## Get information about notarized app
 
 ```swift
 let info = try process.notarizationInfo(for: upload) // or upload.requestUUID
 ```
 
-You can also wait the final result
+You can also wait for the final result
 
 ```swift
 let info = try process.waitForNotarizationInfo(for: upload, timeout: 30 * 60)
 ```
 
-## Get history and full information
+## Get history
 
 ```swift
 let history = try process.notarizationHistory() // page: i
+```
+
+### and full information
+
+```swift
 for item in history.items {
     let info = try process.notarizationInfo(for: item)
     print("\(info)")
