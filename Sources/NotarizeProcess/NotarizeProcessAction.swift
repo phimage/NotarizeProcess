@@ -16,18 +16,18 @@ public struct NotarizeProcessAction: OptionSet {
         self.rawValue = rawValue
     }
 
-    static let notarize = NotarizeProcessAction(rawValue: 1 << 0)
-    static let wait = NotarizeProcessAction(rawValue: 1 << 1)
-    static let staple = NotarizeProcessAction(rawValue: 1 << 2)
+    public static let notarize = NotarizeProcessAction(rawValue: 1 << 0)
+    public static let wait = NotarizeProcessAction(rawValue: 1 << 1)
+    public static let staple = NotarizeProcessAction(rawValue: 1 << 2)
 
-    static let all: NotarizeProcessAction = [ .notarize, .wait, .staple]
+    public static let all: NotarizeProcessAction = [ .notarize, .wait, .staple]
 }
 
 // MARK: - run
 
-extension NotarizeProcess {
+public extension NotarizeProcess {
 
-    public func run(action: NotarizeProcessAction = .all, on app: URL, with bundleId: String = "", type: NotarizePlatform = .osx) throws -> NotarizationInfo? {
+    func run(action: NotarizeProcessAction = .all, on app: URL, with bundleId: String = "", type: NotarizePlatform = .osx) throws -> NotarizationInfo? {
         if action.contains(.notarize) {
             let upload = try notarize(app: app, bundleId: bundleId, type: type)
             if action.contains(.wait) {
