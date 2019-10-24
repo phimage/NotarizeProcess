@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/phimage/NotarizationAuditLog",
         "state": {
           "branch": "HEAD",
-          "revision": "ffe089fdd92fd05894ce66f58f05cbbf41912112",
+          "revision": "daa6a2969d731b9d046811719f84b2fe1c2b80fb",
           "version": null
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/phimage/NotarizationInfo",
         "state": {
           "branch": "HEAD",
-          "revision": "4f9ab881090ede45625ec418a1a0b00d395fcef3",
+          "revision": "062244515453b56fb7208bbe23bc8a738e20e0da",
           "version": null
         }
       }

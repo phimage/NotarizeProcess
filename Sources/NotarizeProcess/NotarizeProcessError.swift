@@ -19,3 +19,14 @@ public enum NotarizeProcessError: Error {
     /// Timed out waiting for notarization requests
     case timeOut(TimeInterval)
 }
+
+extension NotarizeProcessError {
+    var retry: Bool {
+        switch self {
+        case .notaryError(.productErrors(let errors)):
+            return errors.first?.code == 1519
+        default:
+            return false
+        }
+    }
+}

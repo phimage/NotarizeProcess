@@ -52,7 +52,7 @@ public struct NotarizeProcess {
         let response = try decode(out)
         do {
             return try response.getNotarizationUpload()
-        }  catch let error as NotarizationError {
+        } catch let error as NotarizationError {
             throw NotarizeProcessError.notaryError(error)
         } catch let error as DecodingError {
             throw NotarizeProcessError.decodingError(error)
@@ -82,7 +82,7 @@ public struct NotarizeProcess {
         let response = try decode(out)
         do {
             return try response.getNotarizationHistory()
-        }  catch let error as NotarizationError {
+        } catch let error as NotarizationError {
             throw NotarizeProcessError.notaryError(error)
         } catch let error as DecodingError {
             throw NotarizeProcessError.decodingError(error)
@@ -104,7 +104,7 @@ public struct NotarizeProcess {
         let response = try decode(out)
         do {
             return try response.getNotarizationInfo()
-        }  catch let error as NotarizationError {
+        } catch let error as NotarizationError {
             throw NotarizeProcessError.notaryError(error)
         } catch let error as DecodingError {
             throw NotarizeProcessError.decodingError(error)
@@ -138,11 +138,16 @@ public struct NotarizeProcess {
 
     // MARK: - wait info
 
-    public func waitForNotarizationInfo(for uuid: String, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
+    public func waitForNotarizationInfo(for uuid: String, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop, first: Bool = true) throws -> NotarizationInfo {
         var total: TimeInterval = 0
         var sleep: TimeInterval = sleepTime
 
-        var info = try notarizationInfo(for: uuid)
+        var info: NotarizationInfo
+        if first {
+            info = try firstNotarizationInfo(for: uuid, waitMethod: waitMethod)
+        } else {
+            info = try notarizationInfo(for: uuid)
+        }
         while info.status == .inProgress {
             // No results were available so wait and try again
             if total < timeout {
@@ -157,15 +162,28 @@ public struct NotarizeProcess {
         return info
     }
 
+    private func firstNotarizationInfo(for uuid: String, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
+        do {
+           return try notarizationInfo(for: uuid)
+        } catch let error as NotarizeProcessError {
+            if error.retry { // retry first time if uuid not yet available
+                waitMethod.wait(for: 10)
+                return try notarizationInfo(for: uuid)
+            } else {
+                throw error
+            }
+        }
+    }
+
     public func waitForNotarizationInfo(for info: NotarizationInfo, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
         guard let requestUUID = info.requestUUID else {
             return info
         }
-        return try waitForNotarizationInfo(for: requestUUID, sleepTime: sleepTime, sleepTimeFactor: sleepTimeFactor, timeout: timeout, waitMethod: waitMethod)
+        return try waitForNotarizationInfo(for: requestUUID, sleepTime: sleepTime, sleepTimeFactor: sleepTimeFactor, timeout: timeout, waitMethod: waitMethod, first: false)
     }
 
     public func waitForNotarizationInfo(for upload: NotarizationUpload, sleepTime: TimeInterval = 5, sleepTimeFactor: Int = 2, timeout: TimeInterval = 30 * 60, waitMethod: WaitMethod = .runLoop) throws -> NotarizationInfo {
-        return try waitForNotarizationInfo(for: upload.requestUUID, sleepTime: sleepTime, sleepTimeFactor: sleepTimeFactor, timeout: timeout, waitMethod: waitMethod)
+        return try waitForNotarizationInfo(for: upload.requestUUID, sleepTime: sleepTime, sleepTimeFactor: sleepTimeFactor, timeout: timeout, waitMethod: waitMethod, first: true)
     }
 
     // MARK: - staple
