@@ -27,7 +27,7 @@ public struct NotarizeProcessAction: OptionSet {
 
 extension NotarizeProcess {
 
-    public func run(action: NotarizeProcessAction, on app: URL, with bundleId: String = "", type: NotarizePlatform = .osx) throws -> NotarizationInfo? {
+    public func run(action: NotarizeProcessAction = .all, on app: URL, with bundleId: String = "", type: NotarizePlatform = .osx) throws -> NotarizationInfo? {
         if action.contains(.notarize) {
             let upload = try notarize(app: app, bundleId: bundleId, type: type)
             if action.contains(.wait) {

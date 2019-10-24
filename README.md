@@ -77,7 +77,9 @@ try process.validate(app: appURL)
 ## All in one
 
 ```swift
-try process.run(actions: [.notarize, .wait, .staple] /*.all*/, on: appURL)
+try process.run(action: [.notarize, .wait, .staple] /*.all*/, on: appURL)
+try process.run(action: .all, on: appURL)
+try process.run(on: appURL)
 ```
 
 ## Dependencies
